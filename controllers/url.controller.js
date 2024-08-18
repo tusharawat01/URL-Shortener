@@ -23,13 +23,17 @@ async function handleGeneratenewShortUrl(req,res){
        });
 
        console.log("Short ID created Successfully: ",shortId )
+
+       return res.render("home", {
+        id: shortId,
+       })
    
-       return res
-       .status(201)
-       .json({
-           message: "Short ID created successfully",
-           shortId,
-       });
+    //    return res
+    //    .status(201)
+    //    .json({
+    //        message: "Short ID created successfully",
+    //        shortId,
+    //    });
  } catch (error) {
     console.log("Error occured while creating ShortID: ", error)
     return res

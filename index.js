@@ -3,18 +3,22 @@ dotenv.config();
 
 const express = require("express");
 const path = require ("path"); 
+const cookieParser = require("cookie-parser");
 const connectDB  = require("./db");
+
+const { checkAuth } = require("./middlewares/auth.middleware");
+
 const urlRoute = require("./routes/url.route")
 const staticRouter = require("./routes/staticRouter.route")
+const userRoute = require("./routes/user.route")
+
 
 const app = express();
 const PORT = process.env.PORT || 8000
 
-app.use(express.json({ limit: "16kb" }));
-app.use(express.urlencoded({
-    extended: true,
-    limit: "16kb"
-}));
+app.use(express.json());
+app.use(express.urlencoded({extended: false}));
+app.use(cookieParser());
 
 connectDB()
     .then(() => {
@@ -33,7 +37,7 @@ connectDB()
 app.set("view engine", "ejs");
 app.set("views", path.resolve("./views"));
 
-app.use("/", staticRouter)
-
-app.use("/api", urlRoute);
+app.use("/",checkAuth, staticRouter);
+app.use("/url", urlRoute);
+app.use("/user", userRoute);
 
